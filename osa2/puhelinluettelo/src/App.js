@@ -57,22 +57,28 @@ const App = () => {
         })
       }
     } else {
-
       contactService
       .create(contactObject)
       .then(returnedContact => {
         setPersons(persons.concat(returnedContact))
         setNewName('')
         setNewNumber('')
+        setMessage(
+          `Added ${contactObject.name}`
+        )
+        setTimeout(() => {
+          setMessage(null)
+        }, 5000)
       })
-      setMessage(
-        `Added ${contactObject.name}`
-      )
+      .catch(error => {
+      console.log(error.response.data.error)
+      setErrorMessage(error.response.data.error)
       setTimeout(() => {
-        setMessage(null)
+        setErrorMessage(null)
       }, 5000)
+      })
   }
-  }
+}
 
   const handleDelete = (event) => {
     const result = window.confirm("Delete " + event.target.name + " ?")
@@ -144,7 +150,7 @@ const App = () => {
       <Filter value={newFilter} onChange={handleFilterChange}/>
       <h1>add a new</h1>
       <Form addContact={addContact} newName={newName} handleNameChange={handleNameChange} newNumber={newNumber} handleNumberChange={handleNumberChange}/>
-      <h2>Numbers</h2>
+      <h2>Numbers:</h2>
       {contactsToShow.map(person => 
        <Person key={person.id} id={person.id} name={person.name} number={person.number} onClick={handleDelete} />
        )}
